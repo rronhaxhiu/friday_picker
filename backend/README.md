@@ -22,19 +22,20 @@ npm start
 
 ### Required Database Configuration
 
-**Option 1: Use DATABASE_URL (recommended)**
+**DATABASE_URL connection string (required)**
 ```env
 DATABASE_URL=postgresql://user:password@host:port/database
 ```
 
-**Option 2: Use individual variables**
-```env
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=friday_user
-DB_PASSWORD=friday_password
-DB_NAME=friday_picker
-```
+Examples:
+- Local: `postgresql://friday_user:friday_password@localhost:5432/friday_picker`
+- Docker: `postgresql://friday_user:friday_password@postgres:5432/friday_picker`
+- Neon: `postgresql://neondb_owner:**@ep-bitter-credit-ag2xg2do-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require`
+- Production: `postgresql://user:password@db.example.com:5432/friday_picker`
+
+The connection string fully supports query parameters (e.g., `?sslmode=require&channel_binding=require`) and special characters in passwords.
+
+**Note:** `DATABASE_URL` is required. The application will fail to start if it's not set.
 
 ### Server Configuration
 - `PORT` - Server port (default: 3001)

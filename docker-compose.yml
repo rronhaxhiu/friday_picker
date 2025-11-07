@@ -32,11 +32,10 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      DB_HOST: postgres
-      DB_PORT: ${DB_PORT:-5432}
-      DB_USER: ${POSTGRES_USER:-friday_user}
-      DB_PASSWORD: ${POSTGRES_PASSWORD:-friday_password}
-      DB_NAME: ${POSTGRES_DB:-friday_picker}
+      # Primary method: Use DATABASE_URL connection string
+      # If DATABASE_URL is not set, construct it from individual variables
+      # For Docker, use 'postgres' as the hostname (service name)
+      DATABASE_URL: ${DATABASE_URL:-postgresql://friday_user:friday_password@postgres:5432/friday_picker}
       PORT: ${PORT:-3001}
       NODE_ENV: production
     networks:

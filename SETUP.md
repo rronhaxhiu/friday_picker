@@ -26,20 +26,18 @@ cd backend
 cp .env.example .env
 ```
 
-Edit `.env` with your database configuration. For local development with Docker:
+Edit `.env` with your database configuration. You must use a connection string:
 
-```env
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=friday_user
-DB_PASSWORD=friday_password
-DB_NAME=friday_picker
-```
-
-Or use `DATABASE_URL`:
 ```env
 DATABASE_URL=postgresql://friday_user:friday_password@localhost:5432/friday_picker
 ```
+
+For Docker environments, use:
+```env
+DATABASE_URL=postgresql://friday_user:friday_password@postgres:5432/friday_picker
+```
+
+**Note:** `DATABASE_URL` is required. The application will fail to start if it's not set.
 
 ## Step 3: Start the Database (if using Docker)
 

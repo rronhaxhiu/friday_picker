@@ -2,34 +2,28 @@ import { Pool } from 'pg';
 import { USERS } from './config';
 import dotenv from 'dotenv';
 
-dotenv.config();
+// Load .env file, but don't override existing environment variables (e.g., from Docker)
+dotenv.config({ override: false });
 
 // Get database configuration from environment variables
 function getDatabaseConfig() {
-  // Support DATABASE_URL connection string (standard practice)
-  if (process.env.DATABASE_URL) {
-    return {
-      connectionString: process.env.DATABASE_URL,
-    };
-  }
-
-  // Fall back to individual environment variables
-  const requiredVars = ['DB_HOST', 'DB_PORT', 'DB_USER', 'DB_PASSWORD', 'DB_NAME'];
-  const missingVars = requiredVars.filter(varName => !process.env[varName]);
-
-  if (missingVars.length > 0) {
+  // Only method: Use DATABASE_URL connection string (required)
+  if (!process.env.DATABASE_URL) {
     throw new Error(
-      `Missing required database environment variables: ${missingVars.join(', ')}\n` +
-      `Either set DATABASE_URL or set all of: ${requiredVars.join(', ')}`
+      `DATABASE_URL environment variable is required.\n` +
+      `Example: DATABASE_URL=postgresql://user:password@host:port/database?sslmode=require`
     );
   }
 
+  // Mask password in logs for security
+  const maskedUrl = process.env.DATABASE_URL.replace(/:([^:@]+)@/, ':***@');
+  console.log(`📦 Using DATABASE_URL: ${maskedUrl}`);
+  
+  // When using connection string, let pg library handle SSL and query parameters
+  // Connection strings with query params (e.g., ?sslmode=require) are fully supported
+  // The pg library will parse and apply all parameters from the connection string
   return {
-    host: process.env.DB_HOST!,
-    port: parseInt(process.env.DB_PORT!, 10),
-    user: process.env.DB_USER!,
-    password: process.env.DB_PASSWORD!,
-    database: process.env.DB_NAME!,
+    connectionString: process.env.DATABASE_URL,
   };
 }
 
