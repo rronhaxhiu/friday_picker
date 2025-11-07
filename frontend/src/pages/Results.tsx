@@ -21,10 +21,12 @@ export default function Results() {
         api.getOptions(),
         api.getAttendance(),
       ]);
-      setOptions(optionsData.options);
-      setAttendance(attendanceData.attendance);
+      setOptions(Array.isArray(optionsData?.options) ? optionsData.options : []);
+      setAttendance(Array.isArray(attendanceData?.attendance) ? attendanceData.attendance : []);
     } catch (error) {
       console.error('Failed to load data:', error);
+      setOptions([]);
+      setAttendance([]);
     } finally {
       setLoading(false);
     }

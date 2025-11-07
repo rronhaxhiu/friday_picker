@@ -15,9 +15,10 @@ export default function UserSelect() {
   const loadUsers = async () => {
     try {
       const userData = await api.getUsers();
-      setUsers(userData);
+      setUsers(Array.isArray(userData) ? userData : []);
     } catch (error) {
       console.error('Failed to load users:', error);
+      setUsers([]);
     } finally {
       setLoading(false);
     }

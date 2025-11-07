@@ -40,24 +40,29 @@ export default function Dashboard() {
     try {
       // Load attendance
       const attendanceData = await api.getAttendance();
-      const userAttendance = attendanceData.attendance.find(
+      const attendanceArray = Array.isArray(attendanceData?.attendance) ? attendanceData.attendance : [];
+      const userAttendance = attendanceArray.find(
         (a: any) => a.id === currentUser.id
       );
       setIsAttending(userAttendance?.is_attending === 1);
       
       // Count attending users
-      const attending = attendanceData.attendance.filter((a: any) => a.is_attending === 1).length;
+      const attending = attendanceArray.filter((a: any) => a.is_attending === 1).length;
       setAttendingCount(attending);
 
       // Load options
       const optionsData = await api.getOptions();
-      setOptions(optionsData.options);
+      setOptions(Array.isArray(optionsData?.options) ? optionsData.options : []);
 
       // Load user votes
       const votesData = await api.getUserVotes(currentUser.id);
-      setSelectedOptions(new Set(votesData.votes));
+      const votesArray = Array.isArray(votesData?.votes) ? votesData.votes : [];
+      setSelectedOptions(new Set(votesArray));
     } catch (error) {
       console.error('Failed to load data:', error);
+      setOptions([]);
+      setAttendingCount(0);
+      setSelectedOptions(new Set());
     } finally {
       setLoading(false);
     }
